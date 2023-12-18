@@ -42,5 +42,7 @@ finished the course “Learning Apache Airflow” by Janani Ravi! Check it out: 
 
 ### 2. Learned about postgresql and integrated db with airflow
 
+Learned about cron operators and passing arguments throughtout tasks and using TaskFlow api
+
 
 
