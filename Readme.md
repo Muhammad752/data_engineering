@@ -37,7 +37,10 @@
 
 ### 1. Went through the courses on linkedin
 
-Just finished the course “Learning Apache Airflow” by Janani Ravi! Check it out: https://www.linkedin.com/learning/certificates/526bdf263b0d2b5508bac5ef3595bf84f1eac22a138a2f6e665a3a3df4788043?trk=share_certificate #apacheairflow #itautomation.
+finished the course “Learning Apache Airflow” by Janani Ravi! Check it out: https://www.linkedin.com/learning/certificates/526bdf263b0d2b5508bac5ef3595bf84f1eac22a138a2f6e665a3a3df4788043?trk=share_certificate #apacheairflow #itautomation.
+
+
+### 2. Learned about postgresql and integrated db with airflow
 
 
 
