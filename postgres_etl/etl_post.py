@@ -38,6 +38,7 @@ def postgres_etl():
     def load_src_data(tbl_dict:dict):
         conn=BaseHook.get_connection('output_postgres')
         engine=create_engine(f'postgresql://{conn.login}:{conn.password}@{conn.host}:{conn.port}/{conn.schema}')
+        print(f'\n\n\t{conn.schema}\n\n')
         all_tbl_name = []
         start_time = time.time()
 
@@ -50,7 +51,7 @@ def postgres_etl():
             df = hook.get_pandas_df(sql)
             print(f'importing rows {rows_imported} to {rows_imported + len(df)}... for table {v} ')
             result=df.to_sql(f'src_{v}', engine, if_exists='replace', index=False)
-            print(f"\n\n\nRestult is {engine}\n\n\n")
+            print(f"\n\n\nRestult is {result}\n\n\n")
             rows_imported += len(df)
             print(f'Done. {str(round(time.time() - start_time, 2))} total seconds elapsed')
         print("Data imported successful")
