@@ -13,7 +13,8 @@ default_args={"owner":'Muhammadjon'}
     schedule='@daily',
     start_date=days_ago(1),
     default_args=default_args,
-    tags=['copy_data','to_postgres']
+    tags=['copy_data','to_postgres'],
+    catchup=False
 )
 def postgres_etl():
 
@@ -43,15 +44,15 @@ def postgres_etl():
         start_time = time.time()
 
         for k, v in tbl_dict['table_name'].items():
-            print(v)
+            hook=SqliteHook(sqlite_conn_id="input_sqlite")
             all_tbl_name.append(v)
             rows_imported = 0
             sql = f'select * FROM {v}'
-            hook=SqliteHook(sqlite_conn_id="input_sqlite")
             df = hook.get_pandas_df(sql)
-            print(f'importing rows {rows_imported} to {rows_imported + len(df)}... for table {v} ')
+            print(df.head())
+            # print(f'importing rows {rows_imported} to {rows_imported + len(df)}... for table {v} ')
             result=df.to_sql(f'src_{v}', engine, if_exists='replace', index=False)
-            print(f"\n\n\nRestult is {result}\n\n\n")
+            print(f"\n\n\nRestult is in {conn.schema} \n\n\n")
             rows_imported += len(df)
             print(f'Done. {str(round(time.time() - start_time, 2))} total seconds elapsed')
         print("Data imported successful")
@@ -60,13 +61,27 @@ def postgres_etl():
     @task
     def print_result():
         hook=PostgresHook('output_postgres')
-        sql= """SELECT * FROM customer """
+        sql= """SELECT * FROM src_customer LIMIT 5"""
         df=hook.get_pandas_df(sql)
         print(df)
 
     
+    @task
+    def delete_tables(tbl_dict:dict):
+        all_tbl_name = []
+        start_time = time.time()
+
+        for k, v in tbl_dict['table_name'].items():
+            all_tbl_name.append(v)
+            sql = f'DROP TABLE IF EXISTS src_{v}'
+            hook=PostgresHook('output_postgres')
+            hook.run(sql=sql)
+            print(f'Done. {str(round(time.time() - start_time, 2))} total seconds elapsed')
+        print("Data tables deleted successful")
+        return all_tbl_name
+    
     tbl_names=get_src_tables()
-    load_src_data(tbl_names)>>print_result()
+    delete_tables(tbl_names)>>load_src_data(tbl_names)>>print_result()
 
 postgres_etl()
 
