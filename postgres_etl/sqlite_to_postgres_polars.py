@@ -64,9 +64,9 @@ def load_task_using_pl():
             sql = f"SELECT * FROM {v}"
             df = pl.read_database(query=sql, connection=sqlite_source_engine)
             #add time of migration with formatting
-            df = df.with_columns(SYS_DATE = pl.lit(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            df = df.with_columns(SYS_DATE = pl.lit(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))).lazy()
             df.write_database(
-                table_name=f"src_{v}",
+                table_name=f"src2_{v}",
                 connection=postgres_dest_url,
                 if_table_exists="replace",
             )
